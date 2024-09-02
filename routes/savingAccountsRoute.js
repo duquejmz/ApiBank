@@ -5,7 +5,7 @@ const savingAccountsRouter = Router()
 
 savingAccountsRouter.get('/', getAccounts);
 savingAccountsRouter.post('/', PostAccount);
-savingAccountsRouter.delete('/balance', deleteAccount);
+savingAccountsRouter.delete('/+:id', deleteAccount);
 savingAccountsRouter.post('/+:id', postDeposit);
 savingAccountsRouter.post('/retire/:id', postRetire);
 

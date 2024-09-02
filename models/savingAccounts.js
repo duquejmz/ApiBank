@@ -18,8 +18,7 @@ const savingAccountsSchema = new Schema({
         default: 0
     },
     accessKey: {
-        type: String,
-        maxlength: [4, 'the maxlength is 4']
+        type: String
     }
 },
 {
