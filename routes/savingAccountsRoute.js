@@ -1,12 +1,14 @@
 import { Router } from 'express';
-import { deleteAccount, getAccounts, PostAccount, postDeposit, postRetire } from '../controllers/savingAccountsController.js';
+import { deleteAccount, getAccounts, PostAccount, putDeposit, putRetire, getAllActiveAcounts, getAllInactiveAcounts } from '../controllers/savingAccountsController.js';
 
 const savingAccountsRouter = Router()
 
 savingAccountsRouter.get('/', getAccounts);
+savingAccountsRouter.get('/status', getAllActiveAcounts);
+savingAccountsRouter.get('/inactive', getAllInactiveAcounts);
 savingAccountsRouter.post('/', PostAccount);
-savingAccountsRouter.delete('/+:id', deleteAccount);
-savingAccountsRouter.post('/+:id', postDeposit);
-savingAccountsRouter.post('/retire/:id', postRetire);
+savingAccountsRouter.delete('/:id', deleteAccount);
+savingAccountsRouter.put('/:id', putDeposit);
+savingAccountsRouter.put('/retire/:id', putRetire);
 
 export default savingAccountsRouter

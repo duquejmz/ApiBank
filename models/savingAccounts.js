@@ -14,8 +14,13 @@ const savingAccountsSchema = new Schema({
         type : Date
     },
     balance:{
-        type : String,
+        type : Number,
         default: 0
+    },
+    status: {
+        type: String,
+        enum: [ 'activo', 'inactivo' ],
+        default: 'activo'
     },
     accessKey: {
         type: String

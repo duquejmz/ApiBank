@@ -13,11 +13,33 @@ export async function getAccounts (req, res) {
     }
 }
 
+// Get para listar por estado activo
+
+export async function getAllActiveAcounts (req, res) {
+    try {
+        const accounts = await savingAccounts.find({ status : 'activo' });
+        res.status(200).json(accounts)
+    } catch (error){   
+        res.status(400).json({ error: error.message })
+    }
+}
+
+// Get para listar por estado inactivo
+
+export async function getAllInactiveAcounts (req, res) {
+    try {
+        const accounts = await savingAccounts.find({ status : 'inactivo' });
+        res.status(200).json(accounts)
+    } catch (error){   
+        res.status(400).json({ error: error.message })
+    }
+}
+
 // Post para crear los datos de una cuenta 
 
 export async function PostAccount(req, res) {
     try {
-        const { accessKey, documentCustomer, openingDate, balance = 0 } = req.body;
+        const { accessKey, documentCustomer, openingDate, balance = 0, status } = req.body;
 
         const hashedAccessKey = await bcrypt.hash(accessKey, 10);
 
@@ -27,10 +49,11 @@ export async function PostAccount(req, res) {
         // Crear una nueva cuenta
         const newAccount = new savingAccounts({
             accountNumber,
-            documentCustomer: documentCustomer || undefined,
-            openingDate: openingDate ? new Date(openingDate) : undefined,
+            documentCustomer: documentCustomer,
+            openingDate: openingDate ? new Date(openingDate) : new Date(),
             balance,
-            accessKey: hashedAccessKey 
+            accessKey: hashedAccessKey,
+            status 
         });
 
         await newAccount.save();
@@ -42,7 +65,7 @@ export async function PostAccount(req, res) {
 
 // Post para consignar dinero en una cuenta
 
-export async function postDeposit(req, res) {
+export async function putDeposit(req, res) {
     const { balance } = req.body;
 
     if (balance <= 0) {
@@ -55,7 +78,7 @@ export async function postDeposit(req, res) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        account.saldo += balance;
+        account.balance += balance;
         await account.save();
         res.status(200).json({ message: 'Deposit Successful', newBalance: account.balance });
     } catch (error) {
@@ -65,7 +88,7 @@ export async function postDeposit(req, res) {
 
 // Post para retirar dinero de una cuenta
 
-export async function postRetire(req, res) {
+export async function putRetire(req, res) {
     const { balance } = req.body;
 
     if (balance <= 0) {
